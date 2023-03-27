@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:replace="layout :: header"></head>
+<body>
+
+
+<!-- SIDEBAR -->
+<section id="sidebar">
+    <a th:href="@{/admins}" class="brand">
+        <i class='bx bxs-smile'></i>
+        <span class="text">AdminHub</span>
+    </a>
+    <ul class="side-menu top">
+        <li >
+            <a th:href="@{/admins}">
+                <i class='bx bxs-dashboard'></i>
+                <span class="text">Dashboard</span>
+            </a>
+        </li>
+        <li >
+            <a th:href="@{/admins/book}">
+                <i class='bx bxs-shopping-bag-alt'></i>
+                <span class="text">My Store</span>
+            </a>
+        </li>
+        <li class="active">
+            <a th:href="@{/admins/users}">
+                <i class='bx bxs-doughnut-chart'></i>
+                <span class="text">Manager Users</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/admins/orders}">
+                <i class='bx bxs-message-dots'></i>
+                <span class="text">Orders</span>
+            </a>
+        </li>
+
+    </ul>
+</section>
+<!-- SIDEBAR -->
+
+
+
+<!-- CONTENT -->
+<section id="content">
+    <!-- NAVBAR -->
+    <nav>
+        <i class='bx bx-menu'></i>
+        <a href="#" class="nav-link">Categories</a>
+        <form action="#">
+            <div class="form-input">
+                <input type="search" placeholder="Search...">
+                <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+            </div>
+        </form>
+        <input type="checkbox" id="switch-mode" hidden>
+        <label for="switch-mode" class="switch-mode"></label>
+        <a href="#" class="notification">
+            <i class='bx bxs-bell'></i>
+            <span class="num">8</span>
+        </a>
+        <a href="#" class="profile">
+            <img th:href="@{/image/man.png}">
+        </a>
+    </nav>
+    <!-- NAVBAR -->
+
+    <!-- MAIN -->
+    <main>
+        <p>Hello users</p>
+    </main>
+    <!-- MAIN -->
+</section>
+<!-- CONTENT -->
+
+
+<script th:src="@{/js/scriptsAdmin.js}"></script>
+</body>
+
+
+</html>

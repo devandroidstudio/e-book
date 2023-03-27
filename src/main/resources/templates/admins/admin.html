@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:replace="layout :: header"></head>
+<body>
+
+
+<!-- SIDEBAR -->
+<section th:replace="layout :: sidebar"></section>
+<!-- SIDEBAR -->
+
+
+
+<!-- CONTENT -->
+<section id="content">
+
+    <nav th:replace="layout :: navbar"></nav>
+    <div layout:fragment="content">
+
+    </div>
+
+</section>
+<!-- CONTENT -->
+
+
+<script th:src="@{/js/scriptsAdmin.js}"></script>
+</body>
+
+</html>

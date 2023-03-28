@@ -31,7 +31,18 @@ public class BookServiceImpl implements BookService{
 	public Book findById(Long id) {
 		return bookRepository.findById(id).orElse(null);
 	}
-	
+
+	@Override
+	public void save(Book book) {
+		bookRepository.save(book);
+	}
+
+	@Override
+	public void delete(Long id) {
+		bookRepository.deleteById(id);
+	}
+
+
 	public List<Book> findByCategory(String category){
 		List<Book> bookList = bookRepository.findByCategory(category);
 		

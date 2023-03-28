@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="layout :: header">
 
@@ -71,49 +71,85 @@
 
   <!-- MAIN -->
   <main>
-    <div class="table-wrap">
-      <table class="table">
-        <thead class="thead-primary">
-        <tr>
-          <th>Product</th>
-          <th>Title</th>
-          <th>Price</th>
-          <th>Category</th>
-          <th>Quantity</th>
-          <th>&nbsp;</th>
-        </tr>
-        </thead>
-        <tbody>
-        <th:block th:each="book, bookstat : ${listBook}" >
-          <tr class="alert" role="alert">
-            <td>
-              <label class="checkbox-wrap checkbox-primary">
-                <input type="checkbox" checked>
-                <span class="checkmark"></span>
-              </label>
-            </td>
-            <td>
-              <img th:src="${book.getBookImage()}" alt="image.png" srcset="">
-            </td>
-            <td>
-              <div class="text">
-                <span th:text="${book.getTitle()}"> </span>
-                <span th:text="${book.getAuthor()}"></span>
-              </div>
-            </td>
-            <td th:text="${book.getListPrice()}"></td>
-            <td class="text">
-              <span th:text="${book.getCategory()}"></span>
-            </td>
-            <td th:text="${book.getInStockNumber()}"></td>
-            <td><a th:href="@{}" class="btn btn-primary">Edit</a> | <a
-                    th:href="@{}" class="btn btn-warning">Delete</a></td>
+    <div class="container">
+      <a  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editEmployeeModal">Add New Book</a>
+      <div class="table-wrap">
+        <table class="table">
+          <thead class="thead-primary">
+          <tr>
+            <th>Product</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Quantity</th>
+            <th>Action</th>
+            <th>&nbsp;</th>
           </tr>
+          </thead>
+          <tbody>
 
-        </th:block>
-        </tbody>
-      </table>
+
+          <th:block th:each="book, bookstat : ${listBook}" >
+            <tr class="alert" role="alert">
+              <td>
+                <img width="50" height="50" th:src="@{/image/book/}+${book.id}+'.png'" />
+              </td>
+              <td>
+                <div class="text">
+                  <span th:text="${book.getTitle()}"> </span>
+                  <span th:text="${book.author}"></span>
+                </div>
+              </td>
+              <td th:text="${book.listPrice}"></td>
+              <td class="text">
+                <span th:text="${book.category}"></span>
+              </td>
+              <td th:text="${book.inStockNumber}"></td>
+              <td><a  class="btn btn-primary">Edit</a> | <a
+                       class="btn btn-warning">Delete</a></td>
+            </tr>
+
+          </th:block>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="editEmployeeModal" class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form th:action="@{/save}">
+              <div class="modal-header">
+                <h4 class="modal-title">Edit New Book</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label>Name</label>
+                  <input type="text" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Address</label>
+                  <textarea class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Phone</label>
+                  <input type="text" class="form-control" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-info" value="Save">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
+
   </main>
   <!-- MAIN -->
 </section>

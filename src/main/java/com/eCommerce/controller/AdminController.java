@@ -1,6 +1,7 @@
 package com.eCommerce.controller;
 
 import com.eCommerce.domain.Order;
+import com.eCommerce.service.BookService;
 import com.eCommerce.service.OrderService;
 import com.eCommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class AdminController {
     private OrderService orderService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BookService bookService;
     @GetMapping("/admins")
     public String indexAdmin(Model model){
         int totalOrder = orderService.findAllOrder().size();
@@ -33,7 +37,8 @@ public class AdminController {
         return "admins/dashboard";
     }
     @GetMapping("/admins/book")
-    public String bookPage(){
+    public String bookPage(Model model){
+        model.addAttribute("listBook", bookService.findAll());
         return "admins/book";
     }
     @GetMapping("/admins/users")

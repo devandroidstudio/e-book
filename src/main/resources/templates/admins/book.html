@@ -190,7 +190,7 @@
                 <div class="form-group">
                   <label>Image</label>
                   <div class="right-wrap-field">
-                    <input type="file" name="image" onchange="readURL(this);" accept="image/png, image/jpeg" />
+                    <input id="input-file" type="file" th:field="*{bookImage}" name="file" accept="image/png, image/jpeg" />
 
                   </div>
 

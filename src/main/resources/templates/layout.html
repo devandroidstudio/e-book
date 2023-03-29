@@ -58,7 +58,7 @@
 
 
 <!-- CONTENT -->
-<section id="content">
+<section id="content" th:fragment="navbar">
   <!-- NAVBAR -->
   <nav>
     <i class='bx bx-menu'></i>
@@ -76,16 +76,10 @@
       <span class="num">8</span>
     </a>
     <a href="#" class="profile">
-      <img src="img/people.png">
+      <img th:src="@{/image/man.png}">
     </a>
   </nav>
   <!-- NAVBAR -->
-
-  <!-- MAIN -->
-  <div layout:fragment="content">
-    <p>This is filled by the content template.</p>
-  </div>
-  <!-- MAIN -->
 </section>
 <!-- CONTENT -->
 

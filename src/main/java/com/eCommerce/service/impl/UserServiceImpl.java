@@ -102,7 +102,14 @@ public class UserServiceImpl implements UserService{
 	public User save(User user) {
 		return userRepository.save(user);
 	}
-	
+
+	@Override
+	public void delete(Long id) {
+		Long count = userRepository.countById(id);
+		if(count == null || count == 0) throw new RuntimeException("Could not find any users with ID:" + id);
+		userRepository.deleteById(id);
+	}
+
 	@Override
 	public void updateUserBilling(UserBilling userBilling, UserPayment userPayment, User user) {
 		userPayment.setUser(user);

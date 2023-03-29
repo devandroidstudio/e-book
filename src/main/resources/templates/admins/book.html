@@ -117,7 +117,7 @@
       <div id="editEmployeeModal" class="modal fade">
         <div class="modal-dialog">
           <div class="modal-content">
-            <form th:action="@{/save}">
+            <form th:action="@{admins/books/save}" th:object="${book}" enctype="multipart/form-data">
               <div class="modal-header">
                 <h4 class="modal-title">Edit New Book</h4>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
@@ -125,19 +125,75 @@
               <div class="modal-body">
                 <div class="form-group">
                   <label>Name</label>
-                  <input type="text" class="form-control" required>
+                  <input type="text" th:field="*{title}" class="form-control" required>
                 </div>
                 <div class="form-group">
-                  <label>Email</label>
-                  <input type="email" class="form-control" required>
+                  <label>Author</label>
+                  <input type="text" th:field="*{author}" class="form-control" required>
                 </div>
                 <div class="form-group">
-                  <label>Address</label>
-                  <textarea class="form-control" required></textarea>
+                  <label>Public Date</label>
+                  <input type="date" th:field="*{publicationDate}" class="form-control" required>
+                </div>
+                <div class="form-group my-3">
+                  <label>Language</label>
+                  <select>
+                    <option th:field="*{language}" th:value="vietnamese" th:text="vietnamese"></option>
+                    <option th:field="*{language}" th:value="english" th:text="english"></option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Number Of Page</label>
+                  <input type="text" th:field="*{numberOfPages}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Weight</label>
+                  <input type="text" th:field="*{shippingWeight}" class="form-control" required>
+                </div>
+
+                  <div class="form-group">
+
+                  <label>Real Price </label>
+                  <input type="number" th:field="*{listPrice}" class="form-control" required>
+                  </div>
+                <div class="form-group">
+
+                  <label>Reduce Price </label>
+                  <input type="number" th:field="*{ourPrice}" class="form-control" th:min="0" required>
+                </div>
+                <div class="form-group">
+
+                  <label>Quantity</label>
+                  <input type="number" th:field="*{inStockNumber}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Description</label>
+                  <textarea th:field="*{description}" class="form-control" required></textarea>
                 </div>
                 <div class="form-group">
                   <label>Phone</label>
-                  <input type="text" class="form-control" required>
+                  <input type="text" th:field="*{isbn}" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Category</label>
+                  <div class="right-wrap-field">
+                    <select name="categori" id="">
+                      <th:block th:each="category :${categories}">
+
+                        <option th:field="*{category}" th:value="${category.name}" th:text="${category.name}"></option>
+                      </th:block>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Image</label>
+                  <div class="right-wrap-field">
+                    <input type="file" name="image" onchange="readURL(this);" accept="image/png, image/jpeg" />
+
+                  </div>
+
                 </div>
               </div>
               <div class="modal-footer">
@@ -155,7 +211,20 @@
 </section>
 <!-- CONTENT -->
 
+<script>
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
 
+      reader.onload = function (e) {
+        $('#preImg').attr('src', e.target.result);
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+</script>
 <script th:src="@{/js/scriptsAdmin.js}"></script>
 </body>
 

@@ -95,6 +95,8 @@
               <th>Product</th>
               <th>Title</th>
               <th>Price</th>
+              <th>Discount</th>
+              <th>Reduce Price</th>
               <th>Category</th>
               <th>Quantity</th>
               <th>Action</th>
@@ -113,11 +115,14 @@
 
                 <td>
                   <div class="text">
-                    <span th:text="${book.getTitle()}"> </span>
-                    <span th:text="${book.author}"></span>
+                    <span th:text="${book.getTitle()}"> </span> <br/>
+                    <span style="font-weight: bold">Author: </span>
+                    <span style="font-style: italic" th:text="${book.author}"></span>
                   </div>
                 </td>
-                <td th:text="${book.listPrice}"></td>
+                <td th:text="${book.listPrice} +'$'"></td>
+                <td th:text="${book.discount}"></td>
+                <td th:text="${book.ourPrice} + '$'"></td>
                 <td class="text">
                   <span th:text="${book.category}"></span>
                 </td>

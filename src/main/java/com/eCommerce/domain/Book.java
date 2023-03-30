@@ -33,7 +33,16 @@ public class Book {
 	private double listPrice;
 	private double ourPrice;
 	private boolean active=true;
-	
+	private int discount;
+
+	public int getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(int discount) {
+		this.discount = discount;
+	}
+
 	@Column(columnDefinition="text")
 	private String description;
 	private int inStockNumber;

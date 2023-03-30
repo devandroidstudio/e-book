@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.swing.text.html.Option;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -56,7 +57,8 @@ public class AdminController {
         model.addAttribute("totalOrder", totalOrder);
         model.addAttribute("totalUser", totalUser);
         model.addAttribute("listOrder", orderService.findAllOrder());
-        model.addAttribute("totalSale", totalSale);
+        NumberFormat nf = NumberFormat.getInstance(new Locale("en", "US"));
+        model.addAttribute("totalSale", nf.format(totalSale).concat("$"));
         model.addAttribute("listUser", userService.findAllUser());
         return "admins/dashboard";
     }
@@ -82,13 +84,13 @@ public class AdminController {
     }
 
     @PostMapping("/admins/book/save")
-    public String saveBookPage(Book bookCurrent){
+    public String saveBookPage(Book bookCurrent, Principal principal){
         if(!bookCurrent.getBookImage().getOriginalFilename().equals(bookCurrent.getImageProduct()) && !bookCurrent.getBookImage().getOriginalFilename().isEmpty() && bookCurrent.getBookImage().getOriginalFilename() != null){
             bookCurrent.setImageProduct(bookCurrent.getBookImage().getOriginalFilename());
-            System.out.println(bookCurrent.getImageProduct());
             storageService.save(bookCurrent.getBookImage());
         }
-
+        bookCurrent.setPublisher(principal.getName());
+        bookCurrent.setOurPrice(bookCurrent.getListPrice() * (1 - ((double) bookCurrent.getDiscount() / 100)));
         bookService.save(bookCurrent);
 
         return "redirect:/admins/book";
@@ -200,7 +202,7 @@ public class AdminController {
     //Manager Order
     @GetMapping("/admins/orders")
     public String orderPage(Model model){
-        NumberFormat nf = NumberFormat.getInstance(new Locale("en", "US"));
+
 
         model.addAttribute("listOrder", orderService.findAllOrder());
         return "admins/orders";

@@ -69,13 +69,123 @@
 
     <!-- MAIN -->
     <main>
-        <p>Hello oders</p>
+        <div class="head-title">
+            <div class="left">
+                <h1>Management Order</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Management Order</a>
+                    </li>
+                    <li><i class='bx bx-chevron-right'></i></li>
+                    <li>
+                        <a class="active" href="#">Orders</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="table-data">
+            <div class="order">
+                <div class="head">
+                    <h3>Recent Orders</h3>
+                    <i class='bx bx-search'></i>
+                    <i class='bx bx-filter'></i>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Date Order</th>
+                        <th>Ship Method</th>
+                        <th>Status</th>
+                        <th>Total Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="order, userstat : ${listOrder}" >
+                        <tr>
+                            <td class="justify-content-start">
+                                <img th:src="@{/image/man.png}">
+                                <p th:text="${order.getUser().getUsername()}"></p>
+                            </td>
+                            <td th:text="${order.getOrderDate()}"></td>
+                            <td th:text="${order.shippingMethod}"></td>
+                            <td><span class="status completed" th:text="${order.getOrderStatus()}"></span></td>
+                            <td th:text="${order.orderTotal.intValue()}"></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-xl-8 col-lg-7">
+
+                <!-- Area Chart -->
+                <div class="card shadow mb-4 mt-4 pb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="myAreaChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bar Chart -->
+                <div class="card shadow mb-4 mt-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <canvas id="myBarChart"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Donut Chart -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4 mt-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="myPieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
     <!-- MAIN -->
 </section>
 <!-- CONTENT -->
 
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
+<!-- Core plugin JavaScript-->
+<script th:src="@{/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+
+
+
+<!-- Page level plugins -->
+<script th:src="@{/vendor/chart.js/Chart.min.js}"></script>
+
+<!-- Page level custom scripts -->
+<script th:src="@{/js/chart-area-demo.js}"></script>
+<script th:src="@{/js/chart-pie-demo.js}"></script>
+<script th:src="@{/js/chart-bar-demo.js}"></script>
 <script th:src="@{/js/scriptsAdmin.js}"></script>
 </body>
 

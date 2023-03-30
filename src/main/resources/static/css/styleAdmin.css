@@ -507,7 +507,7 @@ body {
     cursor: pointer;
 }
 #content main .table-data .todo .todo-list li.completed {
-    border-left: 10px solid var(--blue);
+    border-left: 10px solid var(--green);
 }
 #content main .table-data .todo .todo-list li.not-completed {
     border-left: 10px solid var(--orange);

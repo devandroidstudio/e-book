@@ -8,6 +8,7 @@ import com.eCommerce.domain.security.Role;
 import com.eCommerce.domain.security.UserRole;
 import com.eCommerce.repository.CategoryRepository;
 import com.eCommerce.service.BookService;
+import com.eCommerce.service.FilesStorageService;
 import com.eCommerce.service.OrderService;
 import com.eCommerce.service.UserService;
 import com.eCommerce.utility.SecurityUtility;
@@ -20,9 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.swing.text.html.Option;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.text.NumberFormat;
+import java.util.*;
 
 @Controller
 public class AdminController {
@@ -37,6 +37,13 @@ public class AdminController {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    FilesStorageService storageService;
+
+
+
+
     @GetMapping("/admins")
     public String indexAdmin(Model model){
         int totalOrder = orderService.findAllOrder().size();
@@ -50,28 +57,54 @@ public class AdminController {
         model.addAttribute("totalUser", totalUser);
         model.addAttribute("listOrder", orderService.findAllOrder());
         model.addAttribute("totalSale", totalSale);
+        model.addAttribute("listUser", userService.findAllUser());
         return "admins/dashboard";
     }
     @GetMapping("/admins/book")
     public String bookPage(Model model){
         model.addAttribute("listBook", bookService.findAll());
-        model.addAttribute("book", new Book());
-        model.addAttribute("categories", categoryRepository.findAll());
         return "admins/book";
     }
 
-//    @GetMapping("/admins/book/editBook")
-//    public String editBookPage(Model model){
-//
-//        return "/admins/editBook";
-//    }
+    @GetMapping("/admins/book/editBook")
+    public String createBookPage(Model model){
+        model.addAttribute("book", new Book());
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "/admins/editBook";
+    }
+
+    @GetMapping("/admins/book/editBook/{id}")
+    public String editBookPage(@PathVariable("id") Long id, Model model){
+        Book book = bookService.findById(id);
+        model.addAttribute("book", book);
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "/admins/editBook";
+    }
 
     @PostMapping("/admins/book/save")
-    public String saveBookPage( Book book){
-        bookService.save(book);
+    public String saveBookPage(Book bookCurrent){
+        if(!bookCurrent.getBookImage().getOriginalFilename().equals(bookCurrent.getImageProduct()) && !bookCurrent.getBookImage().getOriginalFilename().isEmpty() && bookCurrent.getBookImage().getOriginalFilename() != null){
+            bookCurrent.setImageProduct(bookCurrent.getBookImage().getOriginalFilename());
+            System.out.println(bookCurrent.getImageProduct());
+            storageService.save(bookCurrent.getBookImage());
+        }
 
-        return "redirect:/admins/dashboard";
+        bookService.save(bookCurrent);
+
+        return "redirect:/admins/book";
     }
+
+    @GetMapping("/admins/book/delete/{id}")
+    public String deleteBookPage(@PathVariable("id") Long id, RedirectAttributes ra, Model model){
+        try {
+            bookService.delete(id);
+            ra.addFlashAttribute("message", "Delete the image successfully: " + bookService.findById(id).getTitle());
+        }catch (Exception e){
+            ra.addFlashAttribute("message", e.getMessage());
+        }
+        return "redirect:/admins/book";
+    }
+
 
 
     //Manager User
@@ -79,7 +112,6 @@ public class AdminController {
     public String userPage(Model model){
         model.addAttribute("users",userService.findAllUser());
         model.addAttribute("user", new User());
-
         return "admins/users";
     }
     @PostMapping("/admins/users/create")
@@ -133,8 +165,11 @@ public class AdminController {
 
         user.setPhone(userCurrent.getPhone());
 
-        String encryptedPassword = SecurityUtility.passwordEncoder().encode(userCurrent.getPassword());
-        user.setPassword(encryptedPassword);
+       if(!userCurrent.getPassword().isEmpty() || userCurrent.getPassword() != null){
+           String encryptedPassword = SecurityUtility.passwordEncoder().encode(userCurrent.getPassword());
+           user.setPassword(encryptedPassword);
+       }
+        user.setPassword(user.getPassword());
 
         userService.save(user);
         return "redirect:/admins/users";
@@ -164,7 +199,10 @@ public class AdminController {
 
     //Manager Order
     @GetMapping("/admins/orders")
-    public String orderPage(){
+    public String orderPage(Model model){
+        NumberFormat nf = NumberFormat.getInstance(new Locale("en", "US"));
+
+        model.addAttribute("listOrder", orderService.findAllOrder());
         return "admins/orders";
     }
 }

@@ -10,7 +10,7 @@ public interface BookService {
 	
 	Book findById(Long id);
 
-	void save(Book book);
+	Book save(Book book);
 
 	void delete(Long id);
 	

@@ -71,138 +71,68 @@
 
   <!-- MAIN -->
   <main>
-    <div class="container">
-      <a  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editEmployeeModal">Add New Book</a>
-      <div class="table-wrap">
-        <table class="table">
-          <thead class="thead-primary">
-          <tr>
-            <th>Product</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Category</th>
-            <th>Quantity</th>
-            <th>Action</th>
-            <th>&nbsp;</th>
-          </tr>
-          </thead>
-          <tbody>
-
-
-          <th:block th:each="book, bookstat : ${listBook}" >
-            <tr class="alert" role="alert">
-              <td>
-                <img width="50" height="50" th:src="@{/image/book/}+${book.id}+'.png'" />
-              </td>
-              <td>
-                <div class="text">
-                  <span th:text="${book.getTitle()}"> </span>
-                  <span th:text="${book.author}"></span>
-                </div>
-              </td>
-              <td th:text="${book.listPrice}"></td>
-              <td class="text">
-                <span th:text="${book.category}"></span>
-              </td>
-              <td th:text="${book.inStockNumber}"></td>
-              <td><a  class="btn btn-primary">Edit</a> | <a
-                       class="btn btn-warning">Delete</a></td>
-            </tr>
-
-          </th:block>
-          </tbody>
-        </table>
+    <div class="head-title">
+      <div class="left">
+        <h1>My Store</h1>
+        <ul class="breadcrumb">
+          <li>
+            <a href="#">My Store</a>
+          </li>
+          <li><i class='bx bx-chevron-right'></i></li>
+          <li>
+            <a class="active" href="#">Books</a>
+          </li>
+        </ul>
       </div>
+    </div>
+    <div class="table-data">
+      <div class="container">
+        <a  class="btn btn-primary" th:href="@{/admins/book/editBook}">Add New Book</a>
+        <div class="table-wrap">
+          <table class="table">
+            <thead class="thead-primary">
+            <tr>
+              <th>Product</th>
+              <th>Title</th>
+              <th>Price</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Action</th>
+              <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
 
-      <div id="editEmployeeModal" class="modal fade">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <form th:action="@{admins/books/save}" th:object="${book}" enctype="multipart/form-data">
-              <div class="modal-header">
-                <h4 class="modal-title">Edit New Book</h4>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
-              </div>
-              <div class="modal-body">
-                <div class="form-group">
-                  <label>Name</label>
-                  <input type="text" th:field="*{title}" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label>Author</label>
-                  <input type="text" th:field="*{author}" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label>Public Date</label>
-                  <input type="date" th:field="*{publicationDate}" class="form-control" required>
-                </div>
-                <div class="form-group my-3">
-                  <label>Language</label>
-                  <select>
-                    <option th:field="*{language}" th:value="vietnamese" th:text="vietnamese"></option>
-                    <option th:field="*{language}" th:value="english" th:text="english"></option>
-                  </select>
-                </div>
 
-                <div class="form-group">
-                  <label>Number Of Page</label>
-                  <input type="text" th:field="*{numberOfPages}" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label>Weight</label>
-                  <input type="text" th:field="*{shippingWeight}" class="form-control" required>
-                </div>
+            <th:block th:each="book, bookstat : ${listBook}" >
 
-                  <div class="form-group">
+              <tr class="alert" role="alert">
+                <td>
+                  <img width="50" height="50"  th:src="@{/image/book/}+${book.imageProduct}" />
+                </td>
 
-                  <label>Real Price </label>
-                  <input type="number" th:field="*{listPrice}" class="form-control" required>
+                <td>
+                  <div class="text">
+                    <span th:text="${book.getTitle()}"> </span>
+                    <span th:text="${book.author}"></span>
                   </div>
-                <div class="form-group">
+                </td>
+                <td th:text="${book.listPrice}"></td>
+                <td class="text">
+                  <span th:text="${book.category}"></span>
+                </td>
+                <td th:text="${book.inStockNumber}"></td>
+                <td><a th:href="@{'/admins/book/editBook/' + ${book.id}}" class="btn btn-primary">Edit</a> | <a
+                        th:href="@{'/admins/book/delete/' + ${book.id}}"  th:fileName="${book.title}" id="btnDelete"
+                        class="btn btn-warning">Delete</a></td>
+              </tr>
 
-                  <label>Reduce Price </label>
-                  <input type="number" th:field="*{ourPrice}" class="form-control" th:min="0" required>
-                </div>
-                <div class="form-group">
-
-                  <label>Quantity</label>
-                  <input type="number" th:field="*{inStockNumber}" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label>Description</label>
-                  <textarea th:field="*{description}" class="form-control" required></textarea>
-                </div>
-                <div class="form-group">
-                  <label>Phone</label>
-                  <input type="text" th:field="*{isbn}" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                  <label>Category</label>
-                  <div class="right-wrap-field">
-                    <select name="categori" id="">
-                      <th:block th:each="category :${categories}">
-
-                        <option th:field="*{category}" th:value="${category.name}" th:text="${category.name}"></option>
-                      </th:block>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Image</label>
-                  <div class="right-wrap-field">
-                    <input id="input-file" type="file" th:field="*{bookImage}" name="file" accept="image/png, image/jpeg" />
-
-                  </div>
-
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-info" value="Save">
-              </div>
-            </form>
-          </div>
+            </th:block>
+            </tbody>
+          </table>
         </div>
+
+
       </div>
     </div>
 
@@ -211,19 +141,18 @@
 </section>
 <!-- CONTENT -->
 
-<script>
-  function readURL(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".btn-delete").on("click", function (e) {
+      e.preventDefault();
+      link = $(this);
 
-      reader.onload = function (e) {
-        $('#preImg').attr('src', e.target.result);
-      };
-
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-
+      fileName = link.attr("fileName");
+      $("#yesBtn").attr("href", link.attr("href"));
+      $("#confirmText").html("Do you want to delete the File: \<strong\>" + fileName + "\<\/strong\>?");
+      $("#confirmModal").modal();
+    });
+  });
 </script>
 <script th:src="@{/js/scriptsAdmin.js}"></script>
 </body>

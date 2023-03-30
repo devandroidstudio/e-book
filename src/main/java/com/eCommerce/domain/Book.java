@@ -37,7 +37,17 @@ public class Book {
 	@Column(columnDefinition="text")
 	private String description;
 	private int inStockNumber;
-	
+	@Column(name = "image")
+	private String imageProduct;
+
+	public String getImageProduct() {
+		return imageProduct;
+	}
+
+	public void setImageProduct(String imageProduct) {
+		this.imageProduct = imageProduct;
+	}
+
 	@Transient
 	private MultipartFile bookImage;
 	

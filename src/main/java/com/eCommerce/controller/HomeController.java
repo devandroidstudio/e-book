@@ -12,6 +12,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
 
+import com.eCommerce.domain.*;
+import com.eCommerce.service.impl.Emailservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,13 +26,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.eCommerce.domain.Book;
-import com.eCommerce.domain.CartItem;
-import com.eCommerce.domain.Order;
-import com.eCommerce.domain.User;
-import com.eCommerce.domain.UserBilling;
-import com.eCommerce.domain.UserPayment;
-import com.eCommerce.domain.UserShipping;
 import com.eCommerce.domain.security.PasswordResetToken;
 import com.eCommerce.domain.security.Role;
 import com.eCommerce.domain.security.UserRole;
@@ -51,6 +46,9 @@ public class HomeController {
 	
 	@Autowired
 	private JavaMailSender mailSender;
+
+	@Autowired
+	private Emailservice emailservice;
 	
 	@Autowired
 	private MailConstructor mailConstructor;
@@ -511,9 +509,12 @@ public class HomeController {
 		
 		String appUrl = "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
 		
-		SimpleMailMessage email = mailConstructor.constructResetTokenEmail(appUrl, request.getLocale(), token, user, password);
-		
-		mailSender.send(email);
+//		SimpleMailMessage email = mailConstructor.constructResetTokenEmail(appUrl, request.getLocale(), token, user, password);
+//
+//		mailSender.send(email);
+		String url = appUrl + "/newUser?token="+token;
+		EmailRequest emailRequest = new EmailRequest(userEmail,"create account",url);
+		emailservice.sendemail(emailRequest);
 		
 		model.addAttribute("emailSent", "true");
 		model.addAttribute("orderList", user.getOrderList());

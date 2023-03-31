@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import com.eCommerce.service.impl.Emailservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
@@ -47,7 +48,9 @@ public class CheckoutController {
 	
 	@Autowired
 	private JavaMailSender mailSender;
-	
+
+	@Autowired
+	private Emailservice emailservice;
 	@Autowired
 	private MailConstructor mailConstructor;
 	
@@ -191,8 +194,8 @@ public class CheckoutController {
 		
 		Order order = orderService.createOrder(shoppingCart, shippingAddress, billingAddress, payment, shippingMethod, user);
 		
-		mailSender.send(mailConstructor.constructOrderConfirmationEmail(user, order, Locale.ENGLISH));
-		
+//		mailSender.send(mailConstructor.constructOrderConfirmationEmail(user, order, Locale.ENGLISH));
+		emailservice.sendEmailOrder(order,user);
 		shoppingCartService.clearShoppingCart(shoppingCart);
 		
 		LocalDate today = LocalDate.now();

@@ -84,7 +84,7 @@
 							th:href="@{/myProfile}"><span
 								class="glyphicon glyphicon-user" sec:authentication="name"></span> </a></li>
 
-						<li><a sec:authorize="isAuthenticated()"
+						<li><a sec:authorize="hasAnyAuthority('ROLE_ADMIN')"
 							   th:href="@{/admins}"><span
 								class="glyphicon glyphicon-user">Admin</span> </a></li>
 

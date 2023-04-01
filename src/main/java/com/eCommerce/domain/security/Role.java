@@ -1,30 +1,32 @@
 package com.eCommerce.domain.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "role")
 public class Role {
 
 	@Id
-	private int roleId;
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="id", nullable = false, updatable = false)
+	private Integer id;
 	private String name;
-	
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+
+	@OneToMany(mappedBy = "role", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+	@JsonIgnore
 	private Set<UserRole> userRoles = new HashSet<>();
 
 	public int getRoleId() {
-		return roleId;
+		return id;
 	}
 
 	public void setRoleId(int roleId) {
-		this.roleId = roleId;
+		this.id = roleId;
 	}
 
 	public String getName() {

@@ -64,8 +64,13 @@
                 </ul>
             </div>
         </div>
+
         <div class="table-data">
             <div th:class="container">
+                <div th:if="${message}" class="alert alert-danger text-center">
+                    [[${message}]]
+                </div>
+
                 <div class="d-flex mt-2 ml-5 ">
                     <a  class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#newUserModel">Add New User</a>
                 </div>
@@ -85,7 +90,7 @@
                         <th scope="row" th:text="${userStat.count}"></th>
                         <td th:text="${user.username}"></td>
                         <td>
-                            <p th:text="${user.firstName}"> </p> <p th:text="${user.lastName}"></p>
+                            <span th:text="${user.firstName}"> </span> <span th:text="${user.lastName}"></span>
                         </td>
 
                         <td th:text="${user.email}"></td>
@@ -134,13 +139,19 @@
                                 <label>Password</label>
                                 <input type="password" class="form-control" th:field="*{password}" required>
                             </div>
-
+                            <div class="form-group mt-3">
+                                <label>Role</label>
+                                <select name="roleId">
+                                    <option th:each="role : ${roles}" th:value="${role.getRoleId()}" th:text="${role.getName()}"></option>
+                                </select>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <input type="button" class="btn btn-default" data-bs-dismiss="modal" value="Cancel">
                             <input type="submit" class="btn btn-success" value="Add">
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

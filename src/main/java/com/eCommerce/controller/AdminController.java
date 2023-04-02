@@ -7,6 +7,8 @@ import com.eCommerce.domain.User;
 import com.eCommerce.domain.security.Role;
 import com.eCommerce.domain.security.UserRole;
 import com.eCommerce.repository.CategoryRepository;
+import com.eCommerce.repository.RoleRepository;
+import com.eCommerce.repository.UserRolesRepository;
 import com.eCommerce.service.BookService;
 import com.eCommerce.service.FilesStorageService;
 import com.eCommerce.service.OrderService;
@@ -23,6 +25,9 @@ import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -42,7 +47,11 @@ public class AdminController {
     @Autowired
     FilesStorageService storageService;
 
+    @Autowired
+    private RoleRepository roleRepository;
 
+    @Autowired
+    private UserRolesRepository userRolesRepository;
 
 
     @GetMapping("/admins")
@@ -90,7 +99,7 @@ public class AdminController {
             storageService.save(bookCurrent.getBookImage());
         }
         bookCurrent.setPublisher(principal.getName());
-        bookCurrent.setOurPrice(bookCurrent.getListPrice() * (1 - ((double) bookCurrent.getDiscount() / 100)));
+        bookCurrent.setOurPrice(bookCurrent.getListPrice() * (1 - ((double) bookCurrent.getDiscount() / 100) ));
         bookService.save(bookCurrent);
 
         return "redirect:/admins/book";
@@ -114,10 +123,12 @@ public class AdminController {
     public String userPage(Model model){
         model.addAttribute("users",userService.findAllUser());
         model.addAttribute("user", new User());
+        List<Role> list = (List<Role>) roleRepository.findAll();
+        model.addAttribute("roles",list);
         return "admins/users";
     }
     @PostMapping("/admins/users/create")
-    public String newUserPage(User userCurrent, RedirectAttributes ra, Model model) throws Exception{
+    public String newUserPage(User userCurrent, @ModelAttribute("roleId") Long id, Model model) throws Exception{
 
         if (userService.findByUsername(userCurrent.getUsername()) != null) {
             model.addAttribute("usernameExists", true);
@@ -143,20 +154,18 @@ public class AdminController {
 
         String encryptedPassword = SecurityUtility.passwordEncoder().encode(userCurrent.getPassword());
         user.setPassword(encryptedPassword);
+        for (Role role : roleRepository.findAll()) {
+            if(role.getRoleId() == id){
+                Set<UserRole> userRoles = new HashSet<>();
+                userRoles.add(new UserRole(user, role));
+                userService.createUser(user, userRoles);
 
-        Role role = new Role();
-        role.setRoleId(1);
-        role.setName("ROLE_USER");
-        Set<UserRole> userRoles = new HashSet<>();
-        userRoles.add(new UserRole(user, role));
-        userService.createUser(user, userRoles);
-
+            }
+        }
         return "redirect:/admins/users";
     }
-
-
     @PostMapping("/admins/users/save")
-    public String showNewForm(Model model, User userCurrent){
+    public String showNewForm(@ModelAttribute("roleIDEdit") Integer id, User userCurrent){
         User user = new User();
         user.setId(userCurrent.getId());
         user.setUsername(userCurrent.getUsername());
@@ -165,14 +174,23 @@ public class AdminController {
         user.setLastName(userCurrent.getLastName());
         user.setEnabled(true);
 
+
         user.setPhone(userCurrent.getPhone());
 
        if(!userCurrent.getPassword().isEmpty() || userCurrent.getPassword() != null){
            String encryptedPassword = SecurityUtility.passwordEncoder().encode(userCurrent.getPassword());
            user.setPassword(encryptedPassword);
        }
-        user.setPassword(user.getPassword());
-
+       else {
+           user.setPassword(userCurrent.getPassword());
+       }
+        for (UserRole ur : userRolesRepository.findAll()) {
+            if (ur.getUser().getId().equals(userCurrent.getId())){
+                Role role = roleRepository.findById(id).orElse(new Role());
+                ur.setRole(role);
+                userRolesRepository.save(ur);
+            }
+        }
         userService.save(user);
         return "redirect:/admins/users";
     }
@@ -182,16 +200,32 @@ public class AdminController {
             User user = userService.findById(id);
             model.addAttribute("user",user);
             model.addAttribute("pageTitle","Edit User (ID: "+ id+")");
+            List<Role> list = (List<Role>) roleRepository.findAll();
+            model.addAttribute("roles",list);
+            for (UserRole ur : userRolesRepository.findAll()) {
+                if (ur.getUser().getId().equals(id)){
+                    model.addAttribute("roleID", ur.getRole().getRoleId());
+                }
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
         return "admins/editUser";
     }
     @GetMapping("/admins/users/delete/{id}")
-    public String deleteUserPage(@PathVariable("id") Long id, RedirectAttributes ra){
+    public String deleteUserPage(@PathVariable("id") Long id, RedirectAttributes ra, Model model, Principal principal){
         try {
-            userService.delete(id);
-            ra.addFlashAttribute("message","Delete user ID:"+id+" successfully");
+           if(Objects.equals(principal.getName(), userService.findById(id).getUsername())){
+               ra.addFlashAttribute("message","Delete user ID:"+id+" failure. Don't delete yourself.");
+           }else {
+               userService.delete(id);
+               for (UserRole ur : userRolesRepository.findAll()) {
+                   if(Objects.equals(ur.getUser().getId(), id)){
+                       userRolesRepository.delete(ur);
+                   }
+               }
+               ra.addFlashAttribute("message","Delete user ID:"+id+" successfully");
+           }
         }catch (Exception e){
             ra.addFlashAttribute("message", e.getMessage());
         }
@@ -202,8 +236,21 @@ public class AdminController {
     //Manager Order
     @GetMapping("/admins/orders")
     public String orderPage(Model model){
+        int sum = 0;
+        List<Integer> list = new ArrayList<>();
 
+        for (int i = 1; i < 13; i++) {
+            for (Order o : orderService.findAllOrder()) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                String date = simpleDateFormat.format(o.getOrderDate().getMonth());
+                if (i == Integer.parseInt(date)){
+                    sum += o.getOrderTotal().intValue();
+                }
+            }
+            list.add(sum);
+            sum = 0;
 
+        }
         model.addAttribute("listOrder", orderService.findAllOrder());
         return "admins/orders";
     }

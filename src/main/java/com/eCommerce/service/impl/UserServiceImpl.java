@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.eCommerce.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,6 @@ import com.eCommerce.domain.UserPayment;
 import com.eCommerce.domain.UserShipping;
 import com.eCommerce.domain.security.PasswordResetToken;
 import com.eCommerce.domain.security.UserRole;
-import com.eCommerce.repository.PasswordResetTokenRepository;
-import com.eCommerce.repository.RoleRepository;
-import com.eCommerce.repository.UserPaymentRepository;
-import com.eCommerce.repository.UserRepository;
-import com.eCommerce.repository.UserShippingRepository;
 import com.eCommerce.service.UserService;
 
 
@@ -44,6 +40,9 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private PasswordResetTokenRepository passwordResetTokenRepository;
+
+	@Autowired
+	private UserRolesRepository userRolesRepository;
 	
 	@Override
 	public PasswordResetToken getPasswordResetToken(final String token) {
@@ -81,6 +80,7 @@ public class UserServiceImpl implements UserService{
 		} else {
 			for (UserRole ur : userRoles) {
 				roleRepository.save(ur.getRole());
+				userRolesRepository.save(ur);
 			}
 			
 			user.getUserRoles().addAll(userRoles);
@@ -91,8 +91,9 @@ public class UserServiceImpl implements UserService{
 			
 			user.setUserShippingList(new ArrayList<UserShipping>());
 			user.setUserPaymentList(new ArrayList<UserPayment>());
-			
+
 			localUser = userRepository.save(user);
+
 		}
 		
 		return localUser;
